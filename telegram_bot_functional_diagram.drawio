@@ -1,0 +1,160 @@
+<mxfile host="65bd71144e">
+    <diagram name="Functional Flow Diagram" id="functional-flow">
+        <mxGraphModel dx="794" dy="563" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="Функциональная диаграмма Telegram Bot" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="20" width="400" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="user" value="👤 Пользователь" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="100" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="start-cmd" value="/start" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="200" width="60" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="help-cmd" value="/help" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="200" width="60" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="stats-cmd" value="/stats" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="250" width="60" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="sources-cmd" value="/sources" style="rounded=1;whiteSpace=html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="250" width="60" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="export-cmd" value="/export" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="300" width="60" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="clear-cmd" value="/clear" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="300" width="60" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="url-input" value="🔗 URL Link" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="360" width="130" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="bot-handler" value="🎮 Bot Handler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="250" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmd-processing" value="Command Processing" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="180" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="url-validation" value="URL Validation" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="320" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="content-fetch" value="🌐 Content Fetching" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="320" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="text-extraction" value="📝 Text Extraction" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="400" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="ai-analysis" value="🧠 AI Analysis&#xa;Claude 3.5 Sonnet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="480" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="analysis-results" value="📊 Analysis Results" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="480" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="message-format" value="💬 Message Formatting" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="480" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="stats-update" value="📈 Stats Update" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="580" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="data-storage" value="💾 Data Storage&#xa;user_stats.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="580" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="response" value="📱 Response to User" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="480" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="stats-display" value="📊 Statistics Display" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="150" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sources-table" value="📚 Sources Table" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="220" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="pdf-generation" value="📄 PDF Generation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="290" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="stats-clear" value="🗑️ Clear Statistics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="360" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="analysis-box" value="🔍 Анализ включает:&#xa;• Краткое резюме&#xa;• Ключевые моменты&#xa;• Категория контента&#xa;• Уровень сложности&#xa;• Время чтения&#xa;• Оценка релевантности&#xa;• Рекомендуемые действия&#xa;• Теги&#xa;• Приоритет&#xa;• Целевая аудитория" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="400" width="200" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="domains-support" value="🌐 Поддерживаемые домены:&#xa;🔧 Habr.com&#xa;📺 YouTube&#xa;💻 GitHub&#xa;📝 Medium&#xa;👨‍💻 Dev.to&#xa;🔬 ArXiv&#xa;❓ Stack Overflow&#xa;📚 Python Docs&#xa;⚛️ React.js" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="200" width="200" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="interactive-box" value="🎯 Интерактивные функции:&#xa;• Кнопки навигации&#xa;• Пагинация источников&#xa;• Обновление статистики&#xa;• Экспорт в PDF&#xa;• Очистка данных&#xa;• Callback обработка" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="50" width="200" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="error-handling" value="⚠️ Error Handling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="680" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="logging" value="📋 Logging" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="680" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="user-to-handler" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="user" target="bot-handler" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmds-to-handler" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="start-cmd" target="bot-handler" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="url-to-handler" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="url-input" target="bot-handler" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="handler-to-cmd" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="bot-handler" target="cmd-processing" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="handler-to-url" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="bot-handler" target="url-validation" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="url-to-fetch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="url-validation" target="content-fetch" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="fetch-to-extract" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="content-fetch" target="text-extraction" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="extract-to-ai" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="text-extraction" target="ai-analysis" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ai-to-results" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="ai-analysis" target="analysis-results" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="results-to-format" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="analysis-results" target="message-format" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="format-to-response" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="message-format" target="response" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="results-to-stats" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="analysis-results" target="stats-update" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="stats-to-storage" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="stats-update" target="data-storage" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmd-to-stats" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="cmd-processing" target="stats-display" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmd-to-sources" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="cmd-processing" target="sources-table" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmd-to-pdf" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="cmd-processing" target="pdf-generation" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmd-to-clear" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="cmd-processing" target="stats-clear" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="stats-to-error" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" parent="1" source="stats-update" target="error-handling" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="error-to-log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="error-handling" target="logging" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="url-valid-label" value="URL поддерживается?" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="630" y="340" width="80" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmd-type-label" value="Тип команды?" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="630" y="220" width="80" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

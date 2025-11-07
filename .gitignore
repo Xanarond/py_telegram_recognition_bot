@@ -1,0 +1,7 @@
+.env
+mongodb_data/
+postgres_data/
+venv/
+data/
+logs/
+*/__pycache__/

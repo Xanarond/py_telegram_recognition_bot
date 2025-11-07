@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  # PostgreSQL база данных для пользователей
+  postgres:
+    image: postgres:16-alpine
+    container_name: telegram-bot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: telegram_bot_users
+      POSTGRES_USER: bot_user
+      POSTGRES_PASSWORD: bot_password
+      TZ: Europe/Moscow
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bot_user -d telegram_bot_users"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MongoDB база данных для синопсисов
+  mongodb:
+    image: mongo:7.0
+    container_name: telegram-bot-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin_password
+      MONGO_INITDB_DATABASE: telegram_bot_analytics
+      TZ: Europe/Moscow
+    volumes:
+      - ./mongodb_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d
+    ports:
+      - "27017:27017"
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Telegram бот
+  telegram-bot:
+    build: .
+    container_name: telegram-content-analyzer
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Moscow
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=telegram_bot_users
+      - POSTGRES_USER=bot_user
+      - POSTGRES_PASSWORD=bot_password
+      - MONGODB_URL=mongodb://admin:admin_password@mongodb:27017/telegram_bot_analytics?authSource=admin
+      - MONGODB_DATABASE=telegram_bot_analytics
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    networks:
+      - bot-network
+
+  # Mongo Express для управления MongoDB (опционально)
+  mongo-express:
+    image: mongo-express:1.0.2-20-alpine3.19
+    container_name: telegram-bot-mongo-express
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin_password
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin_password@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    networks:
+      - bot-network
+
+volumes:
+  postgres_data:
+    driver: local
+  mongodb_data:
+    driver: local
+
+networks:
+  bot-network:
+    driver: bridge 
