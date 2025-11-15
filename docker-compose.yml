@@ -47,6 +47,30 @@ services:
       timeout: 10s
       retries: 3
 
+  # Chroma DB векторная база данных
+  chromadb:
+    image: chromadb/chroma:0.5.0
+    container_name: telegram-bot-chromadb
+    restart: unless-stopped
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+      - ALLOW_RESET=TRUE
+      - CHROMA_SERVER_AUTHN_PROVIDER=
+      - CHROMA_SERVER_AUTHZ_PROVIDER=
+    volumes:
+      - ./chroma_data:/chroma/chroma
+    ports:
+      - "8000:8000"
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
   # Telegram бот
   telegram-bot:
     build: .
@@ -54,23 +78,46 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/Moscow
+      # PostgreSQL
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_DB=telegram_bot_users
       - POSTGRES_USER=bot_user
       - POSTGRES_PASSWORD=bot_password
+      # MongoDB
       - MONGODB_URL=mongodb://admin:admin_password@mongodb:27017/telegram_bot_analytics?authSource=admin
       - MONGODB_DATABASE=telegram_bot_analytics
+      # RAG и векторная БД
+      - ENABLE_RAG=true
+      - ENABLE_VECTOR_DB=true
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+      # Эмбеддинги (используем OpenAI для меньшей нагрузки на контейнер)
+      - EMBEDDING_PROVIDER=openai
+      - EMBEDDING_MODEL=text-embedding-3-small
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - BOT_TOKEN=${BOT_TOKEN}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # Параметры RAG
+      - SEMANTIC_SEARCH_TOP_K=10
+      - RAG_CONTEXT_SOURCES=5
+      - RAG_MAX_CONTEXT_LENGTH=8000
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
     depends_on:
-      postgres:
-        condition: service_healthy
-      mongodb:
-        condition: service_healthy
+      - postgres
+      - mongodb
+      - chromadb
     networks:
       - bot-network
+    # Лимиты ресурсов (меньше, так как Chroma в отдельном контейнере)
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
 
   # Mongo Express для управления MongoDB (опционально)
   mongo-express:
@@ -94,6 +141,8 @@ volumes:
   postgres_data:
     driver: local
   mongodb_data:
+    driver: local
+  chroma_data:
     driver: local
 
 networks:

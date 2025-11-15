@@ -8,6 +8,7 @@ from typing import Dict, List, Optional, Any
 from storage.postgres_manager import postgres_manager
 from storage.mongodb_manager import mongodb_manager
 from storage.migration_manager import migration_manager
+from config import ENABLE_VECTOR_DB
 from utils.logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -20,6 +21,7 @@ class DatabaseManager:
         self.postgres = postgres_manager
         self.mongodb = mongodb_manager
         self.migration = migration_manager
+        self.vector = None  # Инициализируется позже
         self._initialized = False
     
     async def initialize(self):
@@ -32,6 +34,17 @@ class DatabaseManager:
             
             # Инициализируем MongoDB
             await self.mongodb.initialize()
+            
+            # Инициализируем векторную БД (если включена)
+            if ENABLE_VECTOR_DB:
+                try:
+                    from storage.vector_manager import vector_manager
+                    self.vector = vector_manager
+                    await self.vector.initialize()
+                    logger.info("✅ Векторная база данных инициализирована")
+                except Exception as e:
+                    logger.warning(f"⚠️ Векторная БД не инициализирована: {e}")
+                    self.vector = None
             
             # Выполняем миграцию данных (если необходимо)
             await self.migration.migrate_all_data()
@@ -97,13 +110,43 @@ class DatabaseManager:
     # === Управление контентом и синопсисами ===
     
     async def save_analysis(self, user_id: int, analysis_data: Dict[str, Any]) -> Optional[str]:
-        """Сохраняет анализ контента в обе БД"""
+        """Сохраняет анализ контента в обе БД и векторизует"""
         try:
             # Сохраняем синопсис в MongoDB
             synopsis_id = await self.mongodb.save_synopsis(user_id, analysis_data)
             
             # Обновляем статистику пользователя в PostgreSQL
             await self.postgres.update_user_stats(user_id, analysis_data)
+            
+            # Векторизуем контент (если векторная БД включена)
+            if synopsis_id and self.vector:
+                try:
+                    from analyzers.vectorization_service import vectorization_service
+                    
+                    # Подготавливаем метаданные для векторной БД
+                    analysis = analysis_data.get('analysis', {})
+                    metadata = {
+                        'user_id': user_id,
+                        'title': analysis_data.get('title', ''),
+                        'url': analysis_data.get('url', ''),
+                        'category': analysis.get('category', ''),
+                        'tags': analysis.get('tags', []),
+                        'summary': analysis.get('summary', ''),
+                        'priority_level': analysis.get('priority_level', 'medium'),
+                        'complexity_level': analysis.get('complexity_level', 'средний')
+                    }
+                    
+                    # Векторизуем контент
+                    content = analysis_data.get('content', '')
+                    if content:
+                        await vectorization_service.vectorize_and_store(
+                            synopsis_id=synopsis_id,
+                            content=content,
+                            metadata=metadata
+                        )
+                except Exception as vec_error:
+                    logger.warning(f"⚠️ Ошибка векторизации контента: {vec_error}")
+                    # Не прерываем процесс, если векторизация не удалась
             
             return synopsis_id
             
@@ -154,9 +197,20 @@ class DatabaseManager:
             return False
     
     async def delete_synopsis(self, synopsis_id: str, user_id: int) -> bool:
-        """Удаляет синопсис пользователя"""
+        """Удаляет синопсис пользователя и векторизованный контент"""
         try:
-            return await self.mongodb.delete_synopsis(synopsis_id, user_id)
+            # Удаляем из MongoDB
+            success = await self.mongodb.delete_synopsis(synopsis_id, user_id)
+            
+            # Удаляем из векторной БД (если включена)
+            if success and self.vector:
+                try:
+                    from analyzers.vectorization_service import vectorization_service
+                    await vectorization_service.delete_vectorized_content(synopsis_id)
+                except Exception as vec_error:
+                    logger.warning(f"⚠️ Ошибка удаления векторизованного контента: {vec_error}")
+            
+            return success
         except Exception as e:
             logger.error(f"❌ Ошибка удаления синопсиса {synopsis_id}: {e}")
             return False
@@ -335,6 +389,8 @@ class DatabaseManager:
         try:
             await self.postgres.close()
             await self.mongodb.close()
+            if self.vector:
+                await self.vector.close()
             logger.info("✅ Все подключения к БД закрыты")
         except Exception as e:
             logger.error(f"❌ Ошибка закрытия подключений к БД: {e}")

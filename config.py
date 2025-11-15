@@ -85,6 +85,31 @@ POSTGRES_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST
 # Настройки миграции данных
 ENABLE_DATA_MIGRATION = True  # Включить миграцию из JSON в БД при первом запуске
 
+# Настройки RAG и векторной базы данных
+ENABLE_RAG = True  # Включить RAG функциональность
+ENABLE_VECTOR_DB = True  # Включить векторную базу данных
+
+# Векторная база данных
+VECTOR_DB_PATH = "data/chroma_db"  # Путь к Chroma DB
+VECTOR_DB_PROVIDER = "chroma"  # Провайдер векторной БД (chroma, qdrant)
+CHROMA_HOST = os.getenv("CHROMA_HOST", "chromadb")
+CHROMA_PORT = os.getenv("CHROMA_PORT", "8000")
+
+# Настройки эмбеддингов
+EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "openai")  # openai, sentence-transformers, cohere
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")  # Модель для эмбеддингов
+OPENAI_EMBEDDING_API_KEY = os.getenv("OPENAI_API_KEY")  # API ключ для OpenAI embeddings
+COHERE_API_KEY = os.getenv("COHERE_API_KEY")  # API ключ для Cohere
+
+# Настройки семантического поиска
+SEMANTIC_SEARCH_TOP_K = 10  # Количество результатов семантического поиска
+SEMANTIC_SEARCH_MIN_SCORE = 0.5  # Минимальный порог схожести (0-1)
+
+# Настройки RAG
+RAG_CONTEXT_SOURCES = 5  # Количество источников для контекста RAG
+RAG_MAX_CONTEXT_LENGTH = 8000  # Максимальная длина контекста для RAG
+RAG_TEMPERATURE = 0.3  # Температура для генерации ответов RAG
+
 # Поддерживаемые домены и их эмодзи
 SUPPORTED_DOMAINS: Dict[str, str] = {
     'habr.com': '🔧',
@@ -134,6 +159,6 @@ FONT_PATHS = [
 
 def ensure_directories():
     """Создает необходимые директории"""
-    directories = [LOG_DIR, DATA_DIR, TEMP_DIR]
+    directories = [LOG_DIR, DATA_DIR, TEMP_DIR, VECTOR_DB_PATH]
     for directory in directories:
         os.makedirs(directory, exist_ok=True) 

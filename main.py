@@ -19,6 +19,13 @@ from handlers.bot_handlers import (
 from handlers.admin_handlers import (
     admin_panel, list_users, add_user, remove_user, user_info, auth_status_command
 )
+from handlers.rag_handlers import (
+    search_command, ask_command, compare_command, 
+    synthesize_command, similar_command, rag_help_command
+)
+from handlers.analytics_handlers import (
+    analytics_command, trends_command, clusters_command
+)
 from storage.database_manager import database_manager
 from utils.logger import setup_logger
 
@@ -30,6 +37,17 @@ async def initialize_databases():
     try:
         await database_manager.initialize()
         logger.info("✅ Базы данных инициализированы")
+        
+        # Инициализируем сервис векторизации
+        from config import ENABLE_VECTOR_DB
+        if ENABLE_VECTOR_DB:
+            try:
+                from analyzers.vectorization_service import vectorization_service
+                await vectorization_service.initialize()
+                logger.info("✅ Сервис векторизации инициализирован")
+            except Exception as vec_error:
+                logger.warning(f"⚠️ Сервис векторизации не инициализирован: {vec_error}")
+        
     except Exception as e:
         logger.error(f"❌ Ошибка инициализации баз данных: {e}")
         raise
@@ -65,6 +83,19 @@ async def main():
     application.add_handler(CommandHandler("export", export_command))
     application.add_handler(CommandHandler("clear", clear_stats))
     application.add_handler(CommandHandler("clear_source", clear_single_source_command))
+    
+    # RAG команды
+    application.add_handler(CommandHandler("search", search_command))
+    application.add_handler(CommandHandler("ask", ask_command))
+    application.add_handler(CommandHandler("compare", compare_command))
+    application.add_handler(CommandHandler("synthesize", synthesize_command))
+    application.add_handler(CommandHandler("similar", similar_command))
+    application.add_handler(CommandHandler("rag_help", rag_help_command))
+    
+    # Аналитические команды
+    application.add_handler(CommandHandler("analytics", analytics_command))
+    application.add_handler(CommandHandler("trends", trends_command))
+    application.add_handler(CommandHandler("clusters", clusters_command))
     
     # MessageHandler для команд типа /src_<id> (обрабатывается в handle_message)
     from telegram.ext import filters

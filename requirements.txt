@@ -1,15 +1,30 @@
+# Основные зависимости бота
 python-telegram-bot==21.0.1
 anthropic==0.52.2
 requests==2.31.0
 beautifulsoup4==4.12.2
-reportlab==4.0.4
-pandas==2.2.1
+
+# База данных
 pymongo==4.6.1
 motor==3.3.2
 psycopg2-binary==2.9.9
 sqlalchemy==2.0.25
 alembic==1.13.1
 asyncpg==0.29.0
-# TTS зависимости
+
+# PDF и отчеты
+reportlab==4.0.4
+
+# RAG и векторная база данных (минимальная конфигурация)
+chromadb==0.5.0
+httpx>=0.24.0,<1.0.0
+numpy>=1.24.0,<2.0.0
+
+# Эмбеддинги - только OpenAI (для минимальной установки)
+openai>=1.12.0,<2.0.0
+
+# Базовые TTS зависимости
 gTTS==2.4.0
-pyttsx3==2.90
+
+# Аналитика (минимальная)
+pandas==2.2.1
