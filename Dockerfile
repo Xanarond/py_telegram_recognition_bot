@@ -50,8 +50,8 @@ COPY --chown=appuser:appgroup . .
 RUN mkdir -p data logs exports && \
     chown -R appuser:appgroup data logs exports
 
-# Переключаемся на непривилегированного пользователя
-USER appuser
+# Исправляем окончания строк Windows (CRLF -> LF) и делаем entrypoint исполняемым
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 # Создаем том для хранения данных
 VOLUME ["/app/data", "/app/logs", "/app/exports"]
@@ -60,5 +60,5 @@ VOLUME ["/app/data", "/app/logs", "/app/exports"]
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD python -c "import sys; print('Bot is healthy'); sys.exit(0)" || exit 1
 
-# Запускаем бота
-CMD ["python", "main.py"] 
+# Запускаем через entrypoint (от root для фикса прав, затем переключение на appuser)
+ENTRYPOINT ["/app/entrypoint.sh"] 
