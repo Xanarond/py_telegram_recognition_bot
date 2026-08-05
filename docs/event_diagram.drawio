@@ -1,0 +1,164 @@
+<mxfile host="app.diagrams.net" modified="2024-01-21T12:00:00.000Z" agent="5.0" version="22.1.11">
+  <diagram name="Событийная диаграмма" id="event-flow">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Заголовок -->
+        <mxCell id="title" value="Событийная диаграмма бота" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="400" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Swimlanes (Актеры) -->
+        <mxCell id="user-lane" value="Пользователь" style="swimlane;html=1;startSize=40;horizontal=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="1080" height="120" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="bot-lane" value="Telegram Bot" style="swimlane;html=1;startSize=40;horizontal=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="1080" height="140" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="analyzer-lane" value="Анализатор" style="swimlane;html=1;startSize=40;horizontal=0;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="40" y="340" width="1080" height="140" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="storage-lane" value="Хранилище" style="swimlane;html=1;startSize=40;horizontal=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="480" width="1080" height="120" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="rag-lane" value="RAG Engine" style="swimlane;html=1;startSize=40;horizontal=0;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="1080" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- События в User Lane -->
+        <mxCell id="event1" value="Отправка ссылки" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="user-lane">
+          <mxGeometry x="60" y="40" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="event13" value="Получение результата" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="user-lane">
+          <mxGeometry x="880" y="40" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- События в Bot Lane -->
+        <mxCell id="event2" value="Получение сообщения" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="bot-lane">
+          <mxGeometry x="60" y="45" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="event3" value="Валидация URL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="bot-lane">
+          <mxGeometry x="200" y="45" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="event12" value="Отправка результата" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="bot-lane">
+          <mxGeometry x="880" y="45" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- События в Analyzer Lane -->
+        <mxCell id="event4" value="Запрос контента" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="analyzer-lane">
+          <mxGeometry x="340" y="45" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="event5" value="Парсинг HTML/Субтитров" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="analyzer-lane">
+          <mxGeometry x="480" y="20" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="event6" value="Отправка в Claude 3.7" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="analyzer-lane">
+          <mxGeometry x="480" y="80" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="event7" value="Получение анализа" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="analyzer-lane">
+          <mxGeometry x="620" y="45" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- События в Storage Lane -->
+        <mxCell id="event8" value="Сохранение в MongoDB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="storage-lane">
+          <mxGeometry x="620" y="35" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="event11" value="Получение данных" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="storage-lane">
+          <mxGeometry x="880" y="35" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- События в RAG Lane -->
+        <mxCell id="event9" value="Векторизация контента" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="rag-lane">
+          <mxGeometry x="620" y="45" width="100" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="event10" value="Сохранение в ChromaDB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="rag-lane">
+          <mxGeometry x="760" y="45" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Стрелки (связи) -->
+        <mxCell id="arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="event1" target="event2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="event2" target="event3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="event3" target="event4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="event4" target="event5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="event5" target="event6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="event6" target="event7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="event7" target="event8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="event7" target="event9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="event9" target="event10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="event10" target="event11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="event11" target="event12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="arrow12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="event12" target="event13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Аннотации -->
+        <mxCell id="note1" value="1. Пользователь отправляет ссылку" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="760" width="300" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="note2" value="2. Бот валидирует URL и передает в анализатор" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="780" width="400" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="note3" value="3. Анализатор парсит контент и отправляет в Claude 3.7 Sonnet" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="800" width="400" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="note4" value="4. Результаты сохраняются в MongoDB (контент) и ChromaDB (векторы)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="820" width="450" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="note5" value="5. Бот отправляет результат анализа пользователю" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="840" width="350" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: bot_password
       TZ: Europe/Moscow
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      - ./data/prod/postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
     #ports:
     #  - "5432:5432"
@@ -33,7 +33,7 @@ services:
       MONGO_INITDB_DATABASE: telegram_bot_analytics
       TZ: Europe/Moscow
     volumes:
-      - ./mongodb_data:/data/db
+      - ./data/prod/mongodb_data:/data/db
       - ./mongo-init:/docker-entrypoint-initdb.d
     #ports:
     #  - "27017:27017"
@@ -57,7 +57,7 @@ services:
       - CHROMA_SERVER_AUTHN_PROVIDER=
       - CHROMA_SERVER_AUTHZ_PROVIDER=
     volumes:
-      - ./chroma_data:/chroma/chroma
+      - ./data/prod/chroma_data:/chroma/chroma
     ports:
     - "8000:8000"
     networks:
@@ -101,8 +101,8 @@ services:
       - RAG_CONTEXT_SOURCES=5
       - RAG_MAX_CONTEXT_LENGTH=8000
     volumes:
-      - ./data:/app/data
-      - ./logs:/app/logs
+      - ./data/prod:/app/data
+      - ./data/prod/logs:/app/logs
     depends_on:
       - postgres
       - mongodb
@@ -134,14 +134,6 @@ services:
       - mongodb
     networks:
       - bot-network
-
-volumes:
-  postgres_data:
-    driver: local
-  mongodb_data:
-    driver: local
-  chroma_data:
-    driver: local
 
 networks:
   bot-network:

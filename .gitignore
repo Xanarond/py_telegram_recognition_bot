@@ -1,11 +1,7 @@
 .env
-mongodb_data/
-postgres_data/
-venv/
 data/
 logs/
 */__pycache__/
 chroma_db/
 chroma_data/
-*.excalidraw
-*.drawio
+venv/

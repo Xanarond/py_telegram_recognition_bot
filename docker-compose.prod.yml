@@ -23,9 +23,9 @@ services:
       - MONGODB_PASSWORD=${MONGODB_PASSWORD}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
     volumes:
-      - bot_data:/app/data
-      - bot_logs:/app/logs
-      - bot_exports:/app/exports
+      - ./data/prod:/app/data
+      - ./data/prod/logs:/app/logs
+      - ./data/prod/exports:/app/exports
     depends_on:
       postgres:
         condition: service_healthy
@@ -53,7 +53,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./data/prod/postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d:ro
     networks:
       - bot_network
@@ -82,7 +82,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGODB_DB:-telegram_analytics}
     volumes:
-      - mongodb_data:/data/db
+      - ./data/prod/mongodb_data:/data/db
       - ./mongo-init:/docker-entrypoint-initdb.d:ro
     networks:
       - bot_network
@@ -109,7 +109,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - bot_exports:/usr/share/nginx/html/exports:ro
+      - ./data/prod/exports:/usr/share/nginx/html/exports:ro
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
       - bot_network
@@ -123,18 +123,6 @@ services:
         reservations:
           memory: 32M
           cpus: '0.05'
-
-volumes:
-  postgres_data:
-    driver: local
-  mongodb_data:
-    driver: local
-  bot_data:
-    driver: local
-  bot_logs:
-    driver: local
-  bot_exports:
-    driver: local
 
 networks:
   bot_network:
