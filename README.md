@@ -1,48 +1,70 @@
-# Telegram Bot для анализа контента с ИИ
 
-Модульный Telegram бот для анализа веб-контента с помощью Claude 3.5 Sonnet.
+# Telegram Bot для анализа контента с ИИ и RAG
+
+Модульный Telegram-бот для анализа веб-контента с помощью Claude, с семантическим поиском (RAG), пересказами, TTS-озвучиванием и персональной аналитикой.
 
 ## 🏗️ Архитектура проекта
 
 ```
 telegram_bot_analytic/
-├── main.py                     # Главный файл запуска бота
-├── config.py                   # Конфигурация и настройки
+├── main.py                        # Главный файл запуска бота
+├── config.py                      # Конфигурация и настройки
 │
-├── analyzers/                  # Модули анализа контента
-│   ├── __init__.py
-│   └── content_analyzer.py     # ИИ анализатор контента
+├── analyzers/                     # Модули анализа контента и ИИ-агенты
+│   ├── content_analyzer.py        # ИИ анализатор контента (Claude)
+│   ├── content_analytics.py       # Аналитика интересов и трендов
+│   ├── summary_agent.py           # Агент кратких/подробных пересказов
+│   ├── rag_agent.py                # RAG-агент (поиск + генерация ответов)
+│   ├── embedding_generator.py     # Генерация эмбеддингов (OpenAI/др.)
+│   └── vectorization_service.py   # Векторизация и хранение в Chroma DB
 │
-├── formatters/                 # Модули форматирования сообщений
-│   ├── __init__.py
-│   └── telegram_formatter.py  # Форматтер для Telegram
+├── formatters/                    # Модули форматирования сообщений
+│   ├── telegram_formatter.py      # Форматтер основных сообщений
+│   ├── summary_formatter.py       # Форматирование пересказов
+│   └── rag_formatter.py           # Форматирование RAG-ответов
 │
-├── generators/                 # Модули генерации файлов
-│   ├── __init__.py
-│   └── pdf_generator.py       # Генератор PDF отчетов
+├── generators/                    # Модули генерации файлов
+│   ├── pdf_generator.py           # Генератор PDF отчетов
+│   └── tts_generator.py           # Text-to-Speech генератор аудио
 │
-├── handlers/                   # Обработчики команд и сообщений
-│   ├── __init__.py
-│   └── bot_handlers.py        # Обработчики Telegram бота
+├── handlers/                      # Обработчики команд и сообщений
+│   ├── bot_handlers.py            # Основные обработчики (анализ, статистика)
+│   ├── rag_handlers.py            # Обработчики RAG-команд
+│   ├── analytics_handlers.py      # Обработчики аналитики
+│   └── admin_handlers.py          # Обработчики администрирования
 │
-├── storage/                    # Модули управления данными
-│   ├── __init__.py
-│   └── stats_manager.py       # Менеджер статистики
+├── storage/                       # Модули управления данными
+│   ├── database_manager.py        # Единая точка инициализации БД
+│   ├── mongodb_manager.py         # MongoDB (контент, синопсисы, рейтинги)
+│   ├── postgres_manager.py        # PostgreSQL (пользователи, авторизация)
+│   ├── postgres_models.py         # ORM-модели PostgreSQL
+│   ├── vector_manager.py          # Работа с Chroma DB (векторное хранилище)
+│   ├── migration_manager.py       # Миграция данных
+│   └── stats_manager.py           # Легаси-менеджер статистики (JSON)
 │
-├── utils/                      # Утилиты
-│   ├── __init__.py
-│   └── logger.py              # Настройка логирования
+├── utils/                         # Утилиты
+│   ├── logger.py                  # Настройка логирования
+│   ├── auth.py                    # Авторизация пользователей
+│   ├── decorators.py              # Декораторы (проверка доступа и т.д.)
+│   └── text_utils.py              # Вспомогательные функции для текста
 │
-├── data/                       # Данные и временные файлы
-│   ├── temp/                  # Временные файлы
-│   └── user_stats.json        # Статистика пользователей
+├── scripts/                       # Служебные скрипты
+│   ├── migrate_existing_content.py
+│   └── add_rating_field.py
 │
-├── logs/                       # Логи
-│   └── bot.log
+├── docs/                          # Документация проекта
 │
-├── requirements.txt            # Зависимости Python
-├── Dockerfile                  # Docker конфигурация
-├── docker-compose.yml         # Docker Compose
+├── data/                          # Данные и временные файлы
+├── logs/                          # Логи
+├── mongodb_data/                  # Данные MongoDB (volume)
+├── postgres_data/                 # Данные PostgreSQL (volume)
+├── chroma_data/                   # Данные Chroma DB (volume)
+│
+├── requirements.txt               # Основные зависимости Python
+├── requirements-extras.txt        # Дополнительные зависимости (локальные эмбеддинги и т.д.)
+├── Dockerfile                     # Docker конфигурация
+├── docker-compose.yml             # Docker Compose (dev)
+└── docker-compose.prod.yml        # Docker Compose (production)
 ```
 
 ## 🚀 Быстрый старт
@@ -52,14 +74,20 @@ telegram_bot_analytic/
 1. **Установка зависимостей:**
 ```bash
 pip install -r requirements.txt
+# для локальных эмбеддингов (sentence-transformers) и расширенной аналитики:
+pip install -r requirements-extras.txt
 ```
 
 2. **Настройка конфигурации:**
-Отредактируйте `config.py` и укажите ваши токены:
-```python
-BOT_TOKEN = "your_telegram_bot_token"
-ANTHROPIC_API_KEY = "your_anthropic_api_key"
+Скопируйте `.env.example` в `.env` и укажите переменные:
+```bash
+cp .env.example .env
 ```
+```bash
+BOT_TOKEN=your_telegram_bot_token
+ANTHROPIC_API_KEY=your_anthropic_api_key
+```
+Подробный список переменных окружения — в [docs/ENV_VARIABLES.md](docs/ENV_VARIABLES.md).
 
 3. **Запуск бота:**
 ```bash
@@ -72,77 +100,101 @@ python main.py
 docker-compose up -d
 ```
 
+Поднимает PostgreSQL, MongoDB, Chroma DB, сам бот и Mongo Express (UI для MongoDB). Подробности — в [docs/DOCKER_SETUP.md](docs/DOCKER_SETUP.md).
+
 ## 📋 Модули и их назначение
 
 ### 🔧 config.py
 Центральный файл конфигурации содержит:
 - Токены и API ключи
-- Настройки бота и логирования
-- Пути к файлам и директориям
-- Поддерживаемые домены
-- Настройки ИИ анализа
+- Настройки авторизации пользователей
+- Параметры БД (PostgreSQL, MongoDB), векторной БД (Chroma) и эмбеддингов
+- Параметры RAG, пересказов и TTS
+- Поддерживаемые домены и настройки ИИ-анализа
 
 ### 🤖 analyzers/content_analyzer.py
-Класс `AIContentAnalyzer` отвечает за:
+Класс `AIContentAnalyzer`:
 - Получение контента с веб-страниц
 - Извлечение текста из HTML
-- Анализ контента с помощью Claude 3.5 Sonnet
-- Проверку поддерживаемых доменов
+- Анализ контента с помощью Claude
+- Проверка поддерживаемых доменов
 
-### 💬 formatters/telegram_formatter.py
-Класс `TelegramFormatter` форматирует:
-- Сообщения с результатами анализа
-- Таблицы статистики
-- Списки источников с пагинацией
+### 📄 analyzers/summary_agent.py
+Класс `SummaryAgent`:
+- Краткий и подробный пересказ статьи
+- Пересказ напрямую по URL (свежий контент со страницы)
+- Оценка качества пересказа
 
-### 📄 generators/pdf_generator.py
-Класс `PDFGenerator` создает:
-- PDF отчеты с таблицами источников
-- Текстовые файлы как fallback
-- Поддержка кириллицы в PDF
+### 🔍 analyzers/rag_agent.py, embedding_generator.py, vectorization_service.py
+RAG-конвейер:
+- Векторизация сохранённых материалов (эмбеддинги + Chroma DB)
+- Семантический поиск по базе знаний
+- Генерация ответов с цитированием источников
 
-### 🎮 handlers/bot_handlers.py
-Обработчики команд:
-- `/start` - приветствие
-- `/help` - справка
-- `/stats` - статистика анализов
-- `/sources` - таблица источников
-- `/export` - экспорт в PDF
-- `/clear` - очистка статистики
-- Обработка ссылок и callback кнопок
+### 📊 analyzers/content_analytics.py
+- Персональная аналитика интересов
+- Тренды по периодам
+- Кластеризация по темам
 
-### 💾 storage/stats_manager.py
-Класс `StatsManager` управляет:
-- Загрузкой и сохранением статистики
-- Обновлением данных пользователей
-- Вычислением средних значений
+### 💬 formatters/
+- `telegram_formatter.py` — сообщения с анализом, статистика, списки источников
+- `summary_formatter.py` — форматирование пересказов
+- `rag_formatter.py` — форматирование RAG-ответов
 
-### 📝 utils/logger.py
-Настройка логирования:
-- Файловые и консольные логи
-- Поддержка UTF-8
-- Настраиваемый уровень логирования
+### 📄 generators/
+- `pdf_generator.py` — PDF отчеты с таблицами источников, fallback в текст
+- `tts_generator.py` — озвучивание пересказов (gTTS / pyttsx3)
+
+### 🎮 handlers/
+- `bot_handlers.py` — `/start`, `/help`, `/stats`, `/sources`, `/export`, `/clear`, `/clear_source`, обработка ссылок и callback-кнопок
+- `rag_handlers.py` — `/search`, `/ask`, `/compare`, `/synthesize`, `/similar`, `/rag_help`
+- `analytics_handlers.py` — `/analytics`, `/trends`, `/clusters`
+- `admin_handlers.py` — `/admin`, `/users`, `/add_user`, `/remove_user`, `/user_info`, `/auth_status`
+
+### 💾 storage/
+- `database_manager.py` — единая инициализация всех БД при старте
+- `mongodb_manager.py` — синопсисы, контент, рейтинги статей
+- `postgres_manager.py` / `postgres_models.py` — пользователи и авторизация
+- `vector_manager.py` — Chroma DB (client или embedded режим)
+- `migration_manager.py` — миграция легаси-данных из JSON в БД
+
+### 📝 utils/
+- `logger.py` — файловые и консольные логи, UTF-8, настраиваемый уровень
+- `auth.py`, `decorators.py` — авторизация и ограничение доступа к командам
 
 ## ⚙️ Конфигурация
 
-Основные настройки в `config.py`:
+Основные настройки в `config.py` (переопределяются через `.env` / переменные окружения):
 
 ```python
 # Токены
-BOT_TOKEN = "your_bot_token"
-ANTHROPIC_API_KEY = "your_api_key"
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
 # Поведение бота
-DELETE_ORIGINAL_LINKS = True  # Удалять исходные ссылки
+DELETE_ORIGINAL_LINKS = True         # Удалять исходные ссылки
+ENABLE_USER_AUTHORIZATION = True     # Проверка авторизации пользователей
 
 # Настройки ИИ
-AI_MODEL = "claude-3-5-sonnet-20241022"
-AI_MAX_TOKENS = 1500
+AI_MODEL = "claude-haiku-4-5-20251001"
+AI_MAX_TOKENS = 7500
 AI_TEMPERATURE = 0.3
 
+# RAG и векторная БД
+ENABLE_RAG = True
+ENABLE_VECTOR_DB = True
+EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "openai")
+
+# Пересказы и TTS
+ENABLE_SUMMARY_AGENT = True
+ENABLE_TTS_AGENT = True
+TTS_MAX_TEXT_LENGTH = 25000
+
 # Пагинация
-SOURCES_PER_PAGE = 5
+SOURCES_PER_PAGE = 10
 ```
+
+Полный и актуальный список переменных окружения — [docs/ENV_VARIABLES.md](docs/ENV_VARIABLES.md).
 
 ## 🌐 Поддерживаемые сайты
 
@@ -159,39 +211,64 @@ SOURCES_PER_PAGE = 5
 ## 📊 Функции
 
 ### Анализ контента
-- Краткое резюме
-- Ключевые моменты
-- Категоризация
+- Краткое резюме, ключевые моменты, категоризация
 - Оценка сложности и релевантности
-- Рекомендуемые действия
-- Теги
+- Рекомендуемые действия, теги
 
-### Статистика
-- Общие показатели
-- Распределение по приоритету
-- Анализ по сложности
-- Популярные категории и домены
+### Пересказы и озвучивание
+- Краткий и подробный пересказ (в т.ч. по свежему контенту URL)
+- Озвучивание пересказа (gTTS / pyttsx3)
+
+### RAG и семантический поиск
+- `/search` — семантический поиск по смыслу
+- `/ask` — вопросы к базе знаний с цитированием источников
+- `/compare`, `/synthesize`, `/similar` — сравнение, синтез, поиск похожих материалов
+
+### Аналитика
+- Общие показатели, распределение по приоритету и сложности
+- Тренды за период, кластеризация по темам
+- Рейтинг статей (1–5 звёзд) и статистика по рейтингам
 
 ### Экспорт данных
-- PDF отчеты с таблицами
-- Поддержка кириллицы
+- PDF отчеты с таблицами, поддержка кириллицы
 - Автоматическая очистка временных файлов
 
-## 🔄 Миграция с монолитной версии
+## 🐳 Docker
 
-Старый файл `telegram_bot.py` сохранен для справки. Новая модульная архитектура:
+Проект поддерживает контейнеризацию через `docker-compose.yml` (dev) и `docker-compose.prod.yml` (production). Сервисы: PostgreSQL, MongoDB, Chroma DB, сам бот, Mongo Express.
 
-1. **Разделена по функциональности** - каждый модуль отвечает за свою область
-2. **Легко тестируется** - модули можно тестировать независимо
-3. **Масштабируется** - легко добавлять новые анализаторы и форматтеры
-4. **Поддерживается** - четкое разделение ответственности
+### Быстрый запуск:
+```bash
+docker-compose up -d
+```
+
+Подробности, лимиты ресурсов, backup/restore и troubleshooting — в [docs/DOCKER_SETUP.md](docs/DOCKER_SETUP.md) и [docs/CHROMA_ARCHITECTURE.md](docs/CHROMA_ARCHITECTURE.md).
+
+## 📦 Управление зависимостями
+
+Зависимости разделены на базовые (`requirements.txt`) и дополнительные (`requirements-extras.txt` — локальные эмбеддинги, расширенный TTS, ML-аналитика). Подробное сравнение конфигураций — в [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md).
+
+## 📚 Дополнительная документация
+
+Вся подробная документация находится в каталоге [`docs/`](docs/):
+
+- [ENV_VARIABLES.md](docs/ENV_VARIABLES.md) — переменные окружения
+- [DEPENDENCIES.md](docs/DEPENDENCIES.md) — управление зависимостями
+- [DOCKER_SETUP.md](docs/DOCKER_SETUP.md) — Docker и RAG-инфраструктура
+- [CHROMA_ARCHITECTURE.md](docs/CHROMA_ARCHITECTURE.md) — архитектура векторной БД
+- [RAG_IMPLEMENTATION.md](docs/RAG_IMPLEMENTATION.md) — реализация RAG-конвейера
+- [RAG_QUICK_START.md](docs/RAG_QUICK_START.md) — быстрый старт с RAG-командами
+- [RATING_FEATURE.md](docs/RATING_FEATURE.md) — функция рейтинга статей
+- [RATING_QUICK_START.md](docs/RATING_QUICK_START.md) — быстрый старт с рейтингами
+- [SUMMARY_TTS_README.md](docs/SUMMARY_TTS_README.md) — пересказы и TTS
+- [BOT_ARTICLE.md](docs/BOT_ARTICLE.md) — подробная статья об архитектуре и мотивации проекта
 
 ## 🛠️ Разработка
 
 ### Добавление нового анализатора
 1. Создайте класс в `analyzers/`
 2. Реализуйте интерфейс анализа
-3. Добавьте в `handlers/bot_handlers.py`
+3. Подключите в соответствующем `handlers/*.py`
 
 ### Добавление нового форматтера
 1. Создайте класс в `formatters/`
@@ -199,54 +276,9 @@ SOURCES_PER_PAGE = 5
 3. Используйте в обработчиках
 
 ### Добавление новой команды
-1. Создайте функцию в `handlers/bot_handlers.py`
-2. Добавьте обработчик в `main.py`
-
-## 📦 Зависимости
-
-- `python-telegram-bot` - Telegram Bot API
-- `anthropic` - Claude API
-- `beautifulsoup4` - Парсинг HTML
-- `requests` - HTTP запросы
-- `reportlab` - Генерация PDF
-
-## 🐳 Docker
-
-Проект поддерживает контейнеризацию:
-
-### Быстрый запуск с Docker Compose:
-```bash
-docker-compose up -d
-```
-
-### Ручная сборка и запуск:
-```bash
-# Сборка образа
-docker build -t telegram-content-analyzer .
-
-# Запуск контейнера
-docker run -d \
-  --name telegram-bot \
-  -v $(pwd)/data:/app/data \
-  -v $(pwd)/logs:/app/logs \
-  --restart unless-stopped \
-  telegram-content-analyzer
-```
-
-### Docker Compose конфигурация:
-```yaml
-# docker-compose.yml
-version: '3.8'
-services:
-  telegram-bot:
-    build: .
-    volumes:
-      - ./data:/app/data
-      - ./logs:/app/logs
-    restart: unless-stopped
-```
-
+1. Создайте функцию-обработчик в подходящем `handlers/*.py`
+2. Зарегистрируйте `CommandHandler` в `main.py`
 
 ## 📄 Лицензия
 
-MIT License - см. файл LICENSE для деталей. 
+MIT License - см. файл LICENSE для деталей.

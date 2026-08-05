@@ -53,7 +53,7 @@ MAX_SOURCES_IN_STATS = 10
 
 # Настройки анализа контента
 MAX_CONTENT_LENGTH = 15000
-AI_MODEL = "claude-3-7-sonnet-20250219"
+AI_MODEL = "claude-haiku-4-5-20251001"
 AI_MAX_TOKENS = 7500  # Безопасное значение для Claude 3.7 Sonnet (максимум 8000)
 AI_TEMPERATURE = 0.3
 

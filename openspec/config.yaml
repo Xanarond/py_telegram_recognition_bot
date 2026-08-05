@@ -1,0 +1,33 @@
+schema: spec-driven
+
+# Project context
+context: |
+  Tech stack: Python 3.8+, asyncio, Telegram Bot API
+  Databases: MongoDB (content), PostgreSQL (users), ChromaDB (vectors)
+  AI: Anthropic Claude API for content analysis
+  Architecture: Modular with handlers, analyzers, storage, and generators
+  Domain: Telegram bot for AI-powered web content analysis and knowledge retrieval
+  Conventions: Async/await patterns, Russian comments, type hints
+  Deployment: Docker with docker-compose
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing

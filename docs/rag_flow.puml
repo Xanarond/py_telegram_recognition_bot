@@ -1,0 +1,112 @@
+@startuml RAG процесс поиска и ответа
+
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+
+title RAG процесс: Семантический поиск и генерация ответа
+
+actor "Пользователь" as User #LightBlue
+participant "Telegram Bot" as Bot #LightYellow
+participant "RAG Agent" as RAG #Pink
+database "ChromaDB\n(Векторная БД)" as Chroma #LightCoral
+database "MongoDB\n(Контент)" as Mongo #LightGreen
+participant "Claude 3.7\nSonnet" as AI #Orange
+
+== Команда /search - Семантический поиск ==
+
+User -> Bot: /search <запрос>
+activate Bot
+Bot -> RAG: Поисковый запрос
+activate RAG
+
+RAG -> RAG: Векторизация запроса\n(embeddings)
+note right: Превращение текста\nв вектор чисел
+
+RAG -> Chroma: Поиск по косинусному\nсходству
+activate Chroma
+Chroma -> Chroma: Сравнение векторов
+Chroma --> RAG: Топ-10 релевантных\nдокументов
+deactivate Chroma
+
+RAG -> Mongo: Получение метаданных\nи превью
+activate Mongo
+Mongo --> RAG: Заголовки, теги,\nкраткие описания
+deactivate Mongo
+
+RAG --> Bot: Список результатов
+Bot --> User: Отображение найденных\nстатей с кнопками
+deactivate RAG
+deactivate Bot
+
+== Команда /ask - Вопрос к базе знаний ==
+
+User -> Bot: /ask <вопрос>
+activate Bot
+Bot -> RAG: Запрос на генерацию ответа
+activate RAG
+
+RAG -> RAG: Векторизация вопроса
+
+RAG -> Chroma: Поиск релевантных\nфрагментов
+activate Chroma
+Chroma --> RAG: 5-10 лучших совпадений
+deactivate Chroma
+
+RAG -> Mongo: Получение полного\nконтента статей
+activate Mongo
+Mongo --> RAG: Тексты статей
+deactivate Mongo
+
+RAG -> RAG: Формирование контекста\nдля промпта
+note right: "Ответь на вопрос,\nиспользуя ТОЛЬКО\nследующую информацию..."
+
+RAG -> AI: Промпт + Контекст + Вопрос
+activate AI
+AI -> AI: Генерация ответа
+note right of AI: Claude анализирует\nконтекст и формирует\nответ с цитатами
+AI --> RAG: Ответ с источниками
+deactivate AI
+
+RAG --> Bot: Финальный ответ
+Bot --> User: Ответ + Ссылки\nна источники
+deactivate RAG
+deactivate Bot
+
+== Команда /compare - Сравнительный анализ ==
+
+User -> Bot: /compare <тема>
+activate Bot
+Bot -> RAG: Запрос на сравнение
+activate RAG
+
+RAG -> Chroma: Поиск материалов\nпо обеим сторонам
+activate Chroma
+Chroma --> RAG: Релевантные документы
+deactivate Chroma
+
+RAG -> Mongo: Получение контента
+activate Mongo
+Mongo --> RAG: Полные тексты
+deactivate Mongo
+
+RAG -> AI: Промпт для сравнения
+activate AI
+note right of AI: "Сравни следующие\nматериалы по критериям:\n- Преимущества\n- Недостатки\n- Применение"
+AI --> RAG: Структурированное\nсравнение
+deactivate AI
+
+RAG --> Bot: Таблица сравнения
+Bot --> User: Отображение результатов\nв виде таблицы
+deactivate RAG
+deactivate Bot
+
+note over User, AI
+  **Особенности RAG:**
+  1. Ответы основаны ТОЛЬКО на вашей базе
+  2. Всегда указываются источники
+  3. Семантический поиск понимает смысл
+  4. Контекст ограничен топ-результатами
+end note
+
+@enduml

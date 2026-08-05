@@ -1,0 +1,85 @@
+@startuml Событийная диаграмма бота
+
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Событийная диаграмма работы Telegram бота для анализа контента
+
+actor "Пользователь" as User #LightBlue
+participant "Telegram Bot" as Bot #LightYellow
+participant "Анализатор\nКонтента" as Analyzer #Wheat
+database "MongoDB\n(Контент)" as Mongo #LightGreen
+database "ChromaDB\n(Векторы)" as Chroma #LightCoral
+participant "Claude 3.7\nSonnet" as AI #Orange
+participant "RAG Engine" as RAG #Pink
+
+== Получение и валидация ссылки ==
+
+User -> Bot: Отправка ссылки
+activate Bot
+Bot -> Bot: Валидация URL
+note right: Проверка формата\nи доступности
+
+== Парсинг и извлечение контента ==
+
+Bot -> Analyzer: Запрос на обработку URL
+activate Analyzer
+Analyzer -> Analyzer: Определение типа\n(статья/YouTube/PDF)
+
+alt YouTube видео
+    Analyzer -> Analyzer: Извлечение субтитров\n(yt-dlp)
+else Веб-страница
+    Analyzer -> Analyzer: Парсинг HTML\n(BeautifulSoup/Selenium)
+else PDF документ
+    Analyzer -> Analyzer: Извлечение текста\n(PyPDF2)
+end
+
+Analyzer -> Analyzer: Очистка от HTML-шума
+
+== AI Анализ ==
+
+Analyzer -> AI: Отправка текста на анализ
+activate AI
+note right of AI: Структурирование:\n- Резюме\n- Ключевые тезисы\n- Теги\n- Сложность\n- Тональность
+AI -> AI: Обработка через Claude 3.7
+AI --> Analyzer: JSON с результатами анализа
+deactivate AI
+
+== Сохранение данных ==
+
+par Параллельное сохранение
+    Analyzer -> Mongo: Сохранение контента\nи метаданных
+    activate Mongo
+    Mongo --> Analyzer: Подтверждение сохранения
+    deactivate Mongo
+else
+    Analyzer -> RAG: Передача текста\nдля векторизации
+    activate RAG
+    RAG -> RAG: Генерация embeddings\n(sentence-transformers)
+    RAG -> Chroma: Сохранение векторов
+    activate Chroma
+    Chroma --> RAG: Подтверждение
+    deactivate Chroma
+    RAG --> Analyzer: Готово
+    deactivate RAG
+end
+
+Analyzer --> Bot: Результат анализа
+deactivate Analyzer
+
+== Отправка результата ==
+
+Bot -> Bot: Форматирование результата\n(Markdown, кнопки)
+Bot -> User: Отправка сообщения\nс анализом
+deactivate Bot
+
+note over User, RAG
+  **Итог:**
+  - Контент сохранён в MongoDB
+  - Векторы доступны в ChromaDB
+  - Пользователь получил анализ
+end note
+
+@enduml

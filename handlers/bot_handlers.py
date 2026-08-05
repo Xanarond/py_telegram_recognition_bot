@@ -1854,9 +1854,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             continue
         
         # Отправляем сообщение о начале анализа
+        # parse_mode не используем: URL может содержать _, *, ` — Telegram парсит их как Markdown
         processing_msg = await update.message.reply_text(
-            f"🔍 Анализирую ссылку...\n{url}",
-            parse_mode='Markdown'
+            f"🔍 Анализирую ссылку...\n{url}"
         )
         
         try:

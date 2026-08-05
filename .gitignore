@@ -6,3 +6,6 @@ data/
 logs/
 */__pycache__/
 chroma_db/
+chroma_data/
+*.excalidraw
+*.drawio
